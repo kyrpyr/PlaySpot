@@ -9,6 +9,9 @@ final class MediaKeyInterceptor {
     var onNext: (() -> Void)?
     var onPrevious: (() -> Void)?
 
+    // CGEventType.systemDefined raw value (stable since macOS 10.4; newer SDKs removed the named case)
+    private static let systemDefinedEventType = CGEventType(rawValue: 14)!
+
     // MARK: - Static helpers (testable without system APIs)
 
     static func isKeyDown(data1: Int) -> Bool {
@@ -25,8 +28,7 @@ final class MediaKeyInterceptor {
     func enable() -> Bool {
         guard AXIsProcessTrusted() else { return false }
 
-        let systemDefinedRawValue: UInt32 = 14  // CGEventType.systemDefined raw value
-        let mask = CGEventMask(1 << systemDefinedRawValue)
+        let mask = CGEventMask(1 << Self.systemDefinedEventType.rawValue)
 
         guard let tap = CGEvent.tapCreate(
             tap: .cgSessionEventTap,
@@ -74,8 +76,7 @@ final class MediaKeyInterceptor {
             return Unmanaged.passRetained(event)
         }
 
-        let systemDefinedType = CGEventType(rawValue: 14)!
-        guard type == systemDefinedType,
+        guard type == Self.systemDefinedEventType,
               let nsEvent = NSEvent(cgEvent: event),
               nsEvent.subtype.rawValue == 8 else {
             return Unmanaged.passRetained(event)
