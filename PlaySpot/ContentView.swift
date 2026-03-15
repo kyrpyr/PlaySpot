@@ -8,7 +8,7 @@ struct ContentView: View {
         VStack(spacing: 20) {
             Text(statusText)
                 .font(.headline)
-                .foregroundColor(statusColor)
+                .foregroundStyle(statusColor)
 
             Button(toggleLabel) {
                 handleToggle()
@@ -53,6 +53,8 @@ struct ContentView: View {
         if state.status == .active {
             state.interceptionEnabled = false
         } else {
+            // Check permission here (not just in AppState) so we can show the
+            // in-window alert. AppState also enforces this, but won't set showPermissionAlert.
             guard state.hasAccessibilityPermission else {
                 showPermissionAlert = true
                 return
