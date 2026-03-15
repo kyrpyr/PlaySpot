@@ -26,6 +26,7 @@ final class MediaKeyInterceptor {
     // MARK: - Enable / Disable
 
     func enable() -> Bool {
+        guard eventTap == nil else { return true }  // already enabled — avoid leaking run loop source
         guard AXIsProcessTrusted() else { return false }
 
         let mask = CGEventMask(1 << Self.systemDefinedEventType.rawValue)
