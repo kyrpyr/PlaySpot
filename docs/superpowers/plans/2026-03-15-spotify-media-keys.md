@@ -14,15 +14,15 @@
 
 | File | Responsibility |
 |---|---|
-| `SpotApp/SpotApp.swift` | `@main` entry point, `@NSApplicationDelegateAdaptor` |
-| `SpotApp/AppDelegate.swift` | Lifecycle, menu bar `NSStatusItem`, `UserDefaults` restore |
-| `SpotApp/AppState.swift` | `ObservableObject`: interception state, permission state, menu bar pref |
-| `SpotApp/ContentView.swift` | SwiftUI main window UI |
-| `SpotApp/MediaKeyInterceptor.swift` | CGEvent tap: install, remove, key routing |
-| `SpotApp/SpotifyController.swift` | AppleScript bridge + Spotify launch logic |
-| `SpotAppTests/AppStateTests.swift` | Unit tests for state transitions |
-| `SpotAppTests/MediaKeyInterceptorTests.swift` | Unit tests for key-down detection logic |
-| `SpotAppTests/SpotifyControllerTests.swift` | Unit tests via protocol mock |
+| `PlaySpot/PlaySpot.swift` | `@main` entry point, `@NSApplicationDelegateAdaptor` |
+| `PlaySpot/AppDelegate.swift` | Lifecycle, menu bar `NSStatusItem`, `UserDefaults` restore |
+| `PlaySpot/AppState.swift` | `ObservableObject`: interception state, permission state, menu bar pref |
+| `PlaySpot/ContentView.swift` | SwiftUI main window UI |
+| `PlaySpot/MediaKeyInterceptor.swift` | CGEvent tap: install, remove, key routing |
+| `PlaySpot/SpotifyController.swift` | AppleScript bridge + Spotify launch logic |
+| `PlaySpotTests/AppStateTests.swift` | Unit tests for state transitions |
+| `PlaySpotTests/MediaKeyInterceptorTests.swift` | Unit tests for key-down detection logic |
+| `PlaySpotTests/SpotifyControllerTests.swift` | Unit tests via protocol mock |
 
 ---
 
@@ -31,14 +31,14 @@
 ### Task 1: Create Xcode Project
 
 **Files:**
-- Create: `SpotApp.xcodeproj` (via Xcode GUI)
-- Create: `SpotApp/SpotApp.entitlements`
+- Create: `PlaySpot.xcodeproj` (via Xcode GUI)
+- Create: `PlaySpot/PlaySpot.entitlements`
 
 - [ ] **Step 1: Create project in Xcode**
 
   Open Xcode → File → New → Project → macOS → App
-  - Product Name: `SpotApp`
-  - Bundle Identifier: `com.local.SpotApp`
+  - Product Name: `PlaySpot`
+  - Bundle Identifier: `com.local.PlaySpot`
   - Interface: **SwiftUI**
   - Life Cycle: **SwiftUI App** (this generates a `@main` struct conforming to `App`, which is what the architecture uses with `@NSApplicationDelegateAdaptor`)
   - Language: **Swift**
@@ -46,9 +46,9 @@
 
 - [ ] **Step 2: Disable App Sandbox**
 
-  Project navigator → SpotApp target → Signing & Capabilities → remove "App Sandbox" (CGEvent tap is blocked by sandbox). If Hardened Runtime is present, keep it.
+  Project navigator → PlaySpot target → Signing & Capabilities → remove "App Sandbox" (CGEvent tap is blocked by sandbox). If Hardened Runtime is present, keep it.
 
-  > Note: with App Sandbox removed, no special entitlements are required for AppleScript to work. The `SpotApp.entitlements` file may be empty or deleted.
+  > Note: with App Sandbox removed, no special entitlements are required for AppleScript to work. The `PlaySpot.entitlements` file may be empty or deleted.
 
 - [ ] **Step 3: Build and run**
 
@@ -66,16 +66,16 @@
 ### Task 2: AppState
 
 **Files:**
-- Create: `SpotApp/AppState.swift`
-- Create: `SpotAppTests/AppStateTests.swift`
+- Create: `PlaySpot/AppState.swift`
+- Create: `PlaySpotTests/AppStateTests.swift`
 
 - [ ] **Step 1: Write failing tests**
 
-  Replace the contents of `SpotAppTests/AppStateTests.swift`:
+  Replace the contents of `PlaySpotTests/AppStateTests.swift`:
 
   ```swift
   import XCTest
-  @testable import SpotApp
+  @testable import PlaySpot
 
   final class AppStateTests: XCTestCase {
       func test_initialState_isInactive() {
@@ -123,13 +123,13 @@
 
   `Cmd+U` in Xcode or:
   ```bash
-  xcodebuild test -project SpotApp.xcodeproj -scheme SpotApp -destination 'platform=macOS'
+  xcodebuild test -project PlaySpot.xcodeproj -scheme PlaySpot -destination 'platform=macOS'
   ```
   Expected: compile error — `AppState` not found.
 
 - [ ] **Step 3: Implement AppState**
 
-  Create `SpotApp/AppState.swift`:
+  Create `PlaySpot/AppState.swift`:
 
   ```swift
   import Foundation
@@ -183,14 +183,14 @@
 - [ ] **Step 4: Run tests — expect pass**
 
   ```bash
-  xcodebuild test -project SpotApp.xcodeproj -scheme SpotApp -destination 'platform=macOS'
+  xcodebuild test -project PlaySpot.xcodeproj -scheme PlaySpot -destination 'platform=macOS'
   ```
   Expected: all `AppStateTests` pass.
 
 - [ ] **Step 5: Commit**
 
   ```bash
-  git add SpotApp/AppState.swift SpotAppTests/AppStateTests.swift
+  git add PlaySpot/AppState.swift PlaySpotTests/AppStateTests.swift
   git commit -m "feat: add AppState with interception status and UserDefaults persistence"
   ```
 
@@ -199,16 +199,16 @@
 ### Task 3: SpotifyController
 
 **Files:**
-- Create: `SpotApp/SpotifyController.swift`
-- Create: `SpotAppTests/SpotifyControllerTests.swift`
+- Create: `PlaySpot/SpotifyController.swift`
+- Create: `PlaySpotTests/SpotifyControllerTests.swift`
 
 - [ ] **Step 1: Write failing tests**
 
-  Create `SpotAppTests/SpotifyControllerTests.swift`:
+  Create `PlaySpotTests/SpotifyControllerTests.swift`:
 
   ```swift
   import XCTest
-  @testable import SpotApp
+  @testable import PlaySpot
 
   // Mock workspace to avoid launching real processes in tests
   final class MockWorkspace: WorkspaceProtocol {
@@ -275,7 +275,7 @@
 
 - [ ] **Step 3: Implement SpotifyController**
 
-  Create `SpotApp/SpotifyController.swift`:
+  Create `PlaySpot/SpotifyController.swift`:
 
   ```swift
   import AppKit
@@ -364,7 +364,7 @@
 - [ ] **Step 5: Commit**
 
   ```bash
-  git add SpotApp/SpotifyController.swift SpotAppTests/SpotifyControllerTests.swift
+  git add PlaySpot/SpotifyController.swift PlaySpotTests/SpotifyControllerTests.swift
   git commit -m "feat: add SpotifyController with launch-if-not-running behavior"
   ```
 
@@ -375,16 +375,16 @@
 ### Task 4: MediaKeyInterceptor
 
 **Files:**
-- Create: `SpotApp/MediaKeyInterceptor.swift`
-- Create: `SpotAppTests/MediaKeyInterceptorTests.swift`
+- Create: `PlaySpot/MediaKeyInterceptor.swift`
+- Create: `PlaySpotTests/MediaKeyInterceptorTests.swift`
 
 - [ ] **Step 1: Write failing tests for key-down detection**
 
-  Create `SpotAppTests/MediaKeyInterceptorTests.swift`:
+  Create `PlaySpotTests/MediaKeyInterceptorTests.swift`:
 
   ```swift
   import XCTest
-  @testable import SpotApp
+  @testable import PlaySpot
 
   final class MediaKeyInterceptorTests: XCTestCase {
       // data1 layout: (keyCode << 16) | keyFlags
@@ -425,7 +425,7 @@
 
 - [ ] **Step 3: Implement MediaKeyInterceptor**
 
-  Create `SpotApp/MediaKeyInterceptor.swift`:
+  Create `PlaySpot/MediaKeyInterceptor.swift`:
 
   ```swift
   import CoreGraphics
@@ -539,7 +539,7 @@
 - [ ] **Step 5: Commit**
 
   ```bash
-  git add SpotApp/MediaKeyInterceptor.swift SpotAppTests/MediaKeyInterceptorTests.swift
+  git add PlaySpot/MediaKeyInterceptor.swift PlaySpotTests/MediaKeyInterceptorTests.swift
   git commit -m "feat: add MediaKeyInterceptor with CGEvent tap and key-down filtering"
   ```
 
@@ -548,7 +548,7 @@
 ### Task 5: ContentView
 
 **Files:**
-- Modify: `SpotApp/ContentView.swift`
+- Modify: `PlaySpot/ContentView.swift`
 
 - [ ] **Step 1: Replace ContentView with app UI**
 
@@ -584,7 +584,7 @@
               }
               Button("Cancel", role: .cancel) {}
           } message: {
-              Text("SpotApp needs Accessibility permission to intercept media keys.")
+              Text("PlaySpot needs Accessibility permission to intercept media keys.")
           }
       }
 
@@ -625,21 +625,21 @@
 - [ ] **Step 3: Commit**
 
   ```bash
-  git add SpotApp/ContentView.swift
+  git add PlaySpot/ContentView.swift
   git commit -m "feat: add ContentView with toggle button and menu bar checkbox"
   ```
 
 ---
 
-### Task 6: AppDelegate + SpotApp Entry Point
+### Task 6: AppDelegate + PlaySpot Entry Point
 
 **Files:**
-- Create: `SpotApp/AppDelegate.swift`
-- Modify: `SpotApp/SpotApp.swift`
+- Create: `PlaySpot/AppDelegate.swift`
+- Modify: `PlaySpot/PlaySpot.swift`
 
 - [ ] **Step 1: Implement AppDelegate**
 
-  Create `SpotApp/AppDelegate.swift`:
+  Create `PlaySpot/AppDelegate.swift`:
 
   ```swift
   import AppKit
@@ -723,15 +723,15 @@
   }
   ```
 
-- [ ] **Step 2: Implement SpotApp entry point**
+- [ ] **Step 2: Implement PlaySpot entry point**
 
-  Replace the contents of `SpotApp/SpotApp.swift`:
+  Replace the contents of `PlaySpot/PlaySpot.swift`:
 
   ```swift
   import SwiftUI
 
   @main
-  struct SpotApp: App {
+  struct PlaySpot: App {
       @NSApplicationDelegateAdaptor(AppDelegate.self) var delegate
 
       var body: some Scene {
@@ -751,7 +751,7 @@
 - [ ] **Step 4: Commit**
 
   ```bash
-  git add SpotApp/AppDelegate.swift SpotApp/SpotApp.swift
+  git add PlaySpot/AppDelegate.swift PlaySpot/PlaySpot.swift
   git commit -m "feat: wire AppDelegate, MediaKeyInterceptor, and SpotifyController"
   ```
 
@@ -763,7 +763,7 @@ No automated tests here — these require a real keyboard, Spotify, and system p
 
 - [ ] **Step 1: Grant Accessibility permission**
 
-  Run the app → click "Enable interception" → follow the alert → System Settings → Privacy & Security → Accessibility → enable SpotApp.
+  Run the app → click "Enable interception" → follow the alert → System Settings → Privacy & Security → Accessibility → enable PlaySpot.
 
 - [ ] **Step 2: Test play/pause**
 
@@ -787,7 +787,7 @@ No automated tests here — these require a real keyboard, Spotify, and system p
 
 - [ ] **Step 7: Test permission revocation**
 
-  System Settings → revoke Accessibility for SpotApp → relaunch app → status should show "Accessibility permission required".
+  System Settings → revoke Accessibility for PlaySpot → relaunch app → status should show "Accessibility permission required".
 
 - [ ] **Step 8: Test tap invalidation recovery**
 

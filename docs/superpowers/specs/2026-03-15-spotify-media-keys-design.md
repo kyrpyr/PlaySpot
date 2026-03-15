@@ -8,7 +8,7 @@ Native macOS SwiftUI app that intercepts system media keys (play/pause, next tra
 ## Architecture
 
 ```
-SpotApp (@main SwiftUI, uses @NSApplicationDelegateAdaptor)
+PlaySpot (@main SwiftUI, uses @NSApplicationDelegateAdaptor)
 ├── AppDelegate          — app lifecycle, menu bar NSStatusItem management
 ├── ContentView          — main window UI
 ├── MediaKeyInterceptor  — CGEvent tap: install/remove, key routing
