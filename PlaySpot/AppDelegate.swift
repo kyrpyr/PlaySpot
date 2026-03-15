@@ -1,11 +1,79 @@
 import AppKit
+import SwiftUI
+import Combine
 
-class AppDelegate: NSObject, NSApplicationDelegate {
+final class AppDelegate: NSObject, NSApplicationDelegate {
+    private var statusItem: NSStatusItem?
+    private let interceptor = MediaKeyInterceptor()
+    private let spotify = SpotifyController()
+    private var cancellables = Set<AnyCancellable>()
+    let appState = AppState()
+
     func applicationDidFinishLaunching(_ notification: Notification) {
-        // Setup will go here
+        // Wire interceptor callbacks
+        interceptor.onPlayPause = { [weak self] in self?.spotify.playpause() }
+        interceptor.onNext = { [weak self] in self?.spotify.nextTrack() }
+        interceptor.onPrevious = { [weak self] in self?.spotify.previousTrack() }
+
+        // Check permission and restore saved state
+        appState.hasAccessibilityPermission = AXIsProcessTrusted()
+        let savedEnabled = UserDefaults.standard.bool(forKey: "interceptionEnabled")
+        if savedEnabled {
+            appState.interceptionEnabled = true  // will no-op if no permission
+        }
+
+        // Observe state changes via Combine.
+        // dropFirst() skips the initial value — we call syncInterceptor() explicitly below.
+        appState.$status
+            .dropFirst()
+            .sink { [weak self] _ in
+                self?.syncInterceptor()
+                self?.updateMenuBar()
+            }
+            .store(in: &cancellables)
+
+        appState.$showInMenuBar
+            .dropFirst()
+            .sink { [weak self] _ in self?.updateMenuBar() }
+            .store(in: &cancellables)
+
+        syncInterceptor()
+        updateMenuBar()
     }
 
-    func applicationWillTerminate(_ notification: Notification) {
-        // Teardown will go here
+    private func syncInterceptor() {
+        if appState.status == .active {
+            if !interceptor.enable() {
+                // Tap failed to install (e.g. permission was revoked) — snap back UI
+                appState.interceptionEnabled = false
+            }
+        } else {
+            interceptor.disable()
+        }
+    }
+
+    private func updateMenuBar() {
+        if appState.showInMenuBar {
+            if statusItem == nil {
+                statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
+            }
+            let isActive = appState.status == .active
+            statusItem?.button?.image = NSImage(
+                systemSymbolName: isActive ? "music.note" : "music.note.slash",
+                accessibilityDescription: nil
+            )
+            statusItem?.button?.action = #selector(statusItemClicked)
+            statusItem?.button?.target = self
+        } else {
+            if let item = statusItem {
+                NSStatusBar.system.removeStatusItem(item)
+                statusItem = nil
+            }
+        }
+    }
+
+    @objc private func statusItemClicked() {
+        NSApp.windows.first?.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
     }
 }

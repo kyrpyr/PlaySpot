@@ -2,11 +2,13 @@ import SwiftUI
 
 @main
 struct PlaySpotApp: App {
-    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var delegate
 
     var body: some Scene {
-        Settings {
-            EmptyView()
+        WindowGroup {
+            ContentView()
+                .environmentObject(delegate.appState)
         }
+        .windowResizability(.contentSize)
     }
 }
