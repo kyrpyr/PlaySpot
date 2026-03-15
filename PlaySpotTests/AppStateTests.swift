@@ -2,6 +2,12 @@ import XCTest
 @testable import PlaySpot
 
 final class AppStateTests: XCTestCase {
+    override func tearDown() {
+        UserDefaults.standard.removeObject(forKey: "interceptionEnabled")
+        UserDefaults.standard.removeObject(forKey: "showInMenuBar")
+        super.tearDown()
+    }
+
     func test_initialState_isInactive() {
         let state = AppState()
         XCTAssertFalse(state.interceptionEnabled)
