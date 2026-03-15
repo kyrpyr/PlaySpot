@@ -1,0 +1,45 @@
+name: PlaySpot
+options:
+  bundleIdPrefix: com.local
+  deploymentTarget:
+    macOS: "13.0"
+  xcodeVersion: "15.0"
+  generateEmptyDirectories: true
+
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    MACOSX_DEPLOYMENT_TARGET: "13.0"
+    ENABLE_HARDENED_RUNTIME: NO
+
+targets:
+  PlaySpot:
+    type: application
+    platform: macOS
+    deploymentTarget: "13.0"
+    sources:
+      - path: PlaySpot
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.local.PlaySpot
+        INFOPLIST_FILE: PlaySpot/Info.plist
+        CODE_SIGN_STYLE: Automatic
+        ENABLE_APP_SANDBOX: NO
+        ENABLE_HARDENED_RUNTIME: NO
+    entitlements:
+      path: PlaySpot/PlaySpot.entitlements
+      properties: {}
+
+  PlaySpotTests:
+    type: bundle.unit-test
+    platform: macOS
+    deploymentTarget: "13.0"
+    sources:
+      - path: PlaySpotTests
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.local.PlaySpotTests
+        INFOPLIST_FILE: PlaySpotTests/Info.plist
+        CODE_SIGN_STYLE: Automatic
+    dependencies:
+      - target: PlaySpot
