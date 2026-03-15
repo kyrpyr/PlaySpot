@@ -34,7 +34,7 @@ SpotApp (@main SwiftUI, uses @NSApplicationDelegateAdaptor)
   - `NX_KEYTYPE_PLAY` = 16 — play/pause
   - `NX_KEYTYPE_NEXT` = 17 — next track
   - `NX_KEYTYPE_PREVIOUS` = 18 — previous track (the dedicated ⏮ key; distinct from NX_KEYTYPE_REWIND = 20)
-- **Key-down filtering:** the callback fires for both key-down and key-up. Only key-down events (`(data1 & 0xFF00) >> 8 == 0xA0`) dispatch a command; key-up events are consumed silently without triggering AppleScript.
+- **Key-down filtering:** the callback fires for both key-down and key-up. Only key-down events (`(data1 & 0xFF00) >> 8 == 0x0A`) dispatch a command; key-up events are consumed silently without triggering AppleScript.
 - **Thread safety:** the CGEvent tap callback runs on a CFRunLoop thread. All `SpotifyController` calls are dispatched to `DispatchQueue.main`.
 - **Tap invalidation:** macOS can auto-disable a tap on timeout. The callback handles `kCGEventTapDisabledByTimeout` and `kCGEventTapDisabledByUserInput` by re-enabling the tap via `CGEventTapEnable` and updating the UI status label if the tap cannot be recovered.
 - `enable()` / `disable()` methods install and remove the tap
