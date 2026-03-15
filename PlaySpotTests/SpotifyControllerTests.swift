@@ -5,6 +5,7 @@ import XCTest
 final class MockWorkspace: WorkspaceProtocol {
     var launchCallCount = 0
     var lastLaunchedBundleId: String?
+    var spotifyRunning = false
 
     func launchApp(bundleIdentifier: String) {
         launchCallCount += 1
@@ -12,17 +13,27 @@ final class MockWorkspace: WorkspaceProtocol {
     }
 
     func isAppRunning(bundleIdentifier: String) -> Bool {
-        return false // Spotify not running by default
+        return spotifyRunning
     }
 }
 
 final class SpotifyControllerTests: XCTestCase {
     func test_whenSpotifyNotRunning_launchesApp() {
-        let workspace = MockWorkspace()
+        let workspace = MockWorkspace()  // spotifyRunning = false by default
         let controller = SpotifyController(workspace: workspace)
         controller.playpause()
         XCTAssertEqual(workspace.launchCallCount, 1)
         XCTAssertEqual(workspace.lastLaunchedBundleId, "com.spotify.client")
+    }
+
+    func test_whenSpotifyRunning_doesNotLaunch() {
+        let workspace = MockWorkspace()
+        workspace.spotifyRunning = true
+        var scriptsSent: [String] = []
+        let controller = SpotifyController(workspace: workspace, onScript: { scriptsSent.append($0) })
+        controller.playpause()
+        XCTAssertEqual(workspace.launchCallCount, 0)
+        XCTAssertTrue(scriptsSent.contains(where: { $0.contains("playpause") }))
     }
 
     func test_whenSpotifyNotRunning_nextTrack_launchesApp() {

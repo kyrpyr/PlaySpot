@@ -7,10 +7,9 @@ protocol WorkspaceProtocol {
 
 extension NSWorkspace: WorkspaceProtocol {
     func launchApp(bundleIdentifier: String) {
-        let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: bundleIdentifier)
+        let url = self.urlForApplication(withBundleIdentifier: bundleIdentifier)
         if let url {
-            NSWorkspace.shared.openApplication(at: url,
-                                               configuration: NSWorkspace.OpenConfiguration())
+            self.openApplication(at: url, configuration: NSWorkspace.OpenConfiguration())
         }
     }
 
