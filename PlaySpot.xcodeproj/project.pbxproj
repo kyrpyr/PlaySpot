@@ -8,8 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		38E1E5D36BA152DB057FB052 /* PlaySpotApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E135BBB5CA1E8A84804703 /* PlaySpotApp.swift */; };
+		5A1088825F1F68D0C63BFAA1 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F055136B8FF440AB973DEFBF /* AppState.swift */; };
 		BDB690441B5D43C7CB805207 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB9642BE869ABB16766B30D /* AppDelegate.swift */; };
 		E207D1520F94D8C1AA9D1AC5 /* PlaySpotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F56A97BAA66BE335368F81B /* PlaySpotTests.swift */; };
+		FB675EF1D1CAA790618DE5B8 /* AppStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1955B267FA584D2420EB35DB /* AppStateTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -24,6 +26,7 @@
 
 /* Begin PBXFileReference section */
 		016EAC57E2E55D07E4E72879 /* PlaySpot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PlaySpot.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1955B267FA584D2420EB35DB /* AppStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStateTests.swift; sourceTree = "<group>"; };
 		2F56A97BAA66BE335368F81B /* PlaySpotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaySpotTests.swift; sourceTree = "<group>"; };
 		4A618F7156715820E031C26A /* PlaySpot.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PlaySpot.entitlements; sourceTree = "<group>"; };
 		61E135BBB5CA1E8A84804703 /* PlaySpotApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaySpotApp.swift; sourceTree = "<group>"; };
@@ -31,6 +34,7 @@
 		9A54F6554CBC4386F50EB942 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		CDB9642BE869ABB16766B30D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E17D11796545ACCFFF55265F /* PlaySpotTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PlaySpotTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F055136B8FF440AB973DEFBF /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -38,6 +42,7 @@
 			isa = PBXGroup;
 			children = (
 				CDB9642BE869ABB16766B30D /* AppDelegate.swift */,
+				F055136B8FF440AB973DEFBF /* AppState.swift */,
 				8038A175A0AAA96401F4961F /* Info.plist */,
 				4A618F7156715820E031C26A /* PlaySpot.entitlements */,
 				61E135BBB5CA1E8A84804703 /* PlaySpotApp.swift */,
@@ -66,6 +71,7 @@
 		E5BDBDF8F2CE5D6E5FEAE390 /* PlaySpotTests */ = {
 			isa = PBXGroup;
 			children = (
+				1955B267FA584D2420EB35DB /* AppStateTests.swift */,
 				9A54F6554CBC4386F50EB942 /* Info.plist */,
 				2F56A97BAA66BE335368F81B /* PlaySpotTests.swift */,
 			);
@@ -153,6 +159,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BDB690441B5D43C7CB805207 /* AppDelegate.swift in Sources */,
+				5A1088825F1F68D0C63BFAA1 /* AppState.swift in Sources */,
 				38E1E5D36BA152DB057FB052 /* PlaySpotApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -161,6 +168,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FB675EF1D1CAA790618DE5B8 /* AppStateTests.swift in Sources */,
 				E207D1520F94D8C1AA9D1AC5 /* PlaySpotTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
