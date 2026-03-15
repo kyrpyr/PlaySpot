@@ -72,6 +72,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
+        // Keep the app running when the window is closed — user may still want the menu bar item
+        return false
+    }
+
+    func applicationWillTerminate(_ notification: Notification) {
+        interceptor.disable()
+    }
+
     @objc private func statusItemClicked() {
         NSApp.windows.first?.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
