@@ -2,8 +2,6 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject var state: AppState
-    @State private var showPermissionAlert = false
-
     var body: some View {
         VStack(spacing: 20) {
             Text(statusText)
@@ -14,23 +12,13 @@ struct ContentView: View {
                 handleToggle()
             }
             .buttonStyle(.borderedProminent)
-            .tint(state.status == .active ? .green : .gray)
+            .tint(state.status == .active ? .red : .green)
 
             Toggle("Show in Menu Bar", isOn: $state.showInMenuBar)
                 .toggleStyle(.checkbox)
         }
         .padding(30)
         .frame(width: 280)
-        .alert("Accessibility Permission Required", isPresented: $showPermissionAlert) {
-            Button("Open System Settings") {
-                NSWorkspace.shared.open(
-                    URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility")!
-                )
-            }
-            Button("Cancel", role: .cancel) {}
-        } message: {
-            Text("PlaySpot needs Accessibility permission to intercept media keys.")
-        }
     }
 
     private var statusText: String {
@@ -53,13 +41,17 @@ struct ContentView: View {
         if state.status == .active {
             state.interceptionEnabled = false
         } else {
-            // Re-check live — permission may have been granted after app launch
-            state.hasAccessibilityPermission = AXIsProcessTrusted()
-            guard state.hasAccessibilityPermission else {
-                showPermissionAlert = true
-                return
+            // AXIsProcessTrustedWithOptions opens System Settings focused on the exact running
+            // binary when not trusted — no manual navigation or wrong-entry risk.
+            let trusted = AXIsProcessTrustedWithOptions(
+                [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary
+            )
+            print("[PlaySpot] handleToggle: AXIsProcessTrustedWithOptions=\(trusted)")
+            state.hasAccessibilityPermission = trusted
+            if trusted {
+                state.interceptionEnabled = true
             }
-            state.interceptionEnabled = true
+            // If not trusted: System Settings just opened — user adds the app, then clicks Enable again.
         }
     }
 }

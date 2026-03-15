@@ -27,7 +27,9 @@ final class MediaKeyInterceptor {
 
     func enable() -> Bool {
         guard eventTap == nil else { return true }  // already enabled — avoid leaking run loop source
-        guard AXIsProcessTrusted() else { return false }
+        let trusted = AXIsProcessTrusted()
+        print("[PlaySpot] enable(): AXIsProcessTrusted=\(trusted)")
+        guard trusted else { return false }
 
         let mask = CGEventMask(1 << Self.systemDefinedEventType.rawValue)
 
@@ -43,8 +45,10 @@ final class MediaKeyInterceptor {
             },
             userInfo: Unmanaged.passUnretained(self).toOpaque()
         ) else {
+            print("[PlaySpot] enable(): tapCreate FAILED (AXIsProcessTrusted=\(AXIsProcessTrusted()))")
             return false
         }
+        print("[PlaySpot] enable(): tapCreate succeeded")
 
         let source = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, tap, 0)
         CFRunLoopAddSource(CFRunLoopGetCurrent(), source, .commonModes)

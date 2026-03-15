@@ -16,7 +16,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         interceptor.onPrevious = { [weak self] in self?.spotify.previousTrack() }
 
         // Check permission and restore saved state
-        appState.hasAccessibilityPermission = AXIsProcessTrusted()
+        let trusted = AXIsProcessTrusted()
+        print("[PlaySpot] launch: AXIsProcessTrusted=\(trusted) path=\(Bundle.main.bundlePath)")
+        appState.hasAccessibilityPermission = trusted
         let savedEnabled = UserDefaults.standard.bool(forKey: "interceptionEnabled")
         if savedEnabled {
             appState.interceptionEnabled = true  // will no-op if no permission
@@ -24,10 +26,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         // Observe state changes via Combine.
         // dropFirst() skips the initial value — we call syncInterceptor() explicitly below.
+        // NOTE: @Published fires BEFORE the property is updated, so we must use the
+        // emitted value rather than re-reading appState.status inside the sink.
         appState.$status
             .dropFirst()
-            .sink { [weak self] _ in
-                self?.syncInterceptor()
+            .sink { [weak self] newStatus in
+                self?.syncInterceptor(for: newStatus)
                 self?.updateMenuBar()
             }
             .store(in: &cancellables)
@@ -37,13 +41,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             .sink { [weak self] _ in self?.updateMenuBar() }
             .store(in: &cancellables)
 
-        syncInterceptor()
+        syncInterceptor(for: appState.status)
         updateMenuBar()
     }
 
-    private func syncInterceptor() {
-        if appState.status == .active {
-            if !interceptor.enable() {
+    private func syncInterceptor(for status: InterceptionStatus) {
+        print("[PlaySpot] syncInterceptor: status=\(status)")
+        if status == .active {
+            let ok = interceptor.enable()
+            if !ok {
                 // Tap failed to install (e.g. permission was revoked) — snap back UI
                 appState.interceptionEnabled = false
             }

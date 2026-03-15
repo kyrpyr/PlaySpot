@@ -24,5 +24,7 @@
     <string>NSApplication</string>
     <key>NSHighResolutionCapable</key>
     <true/>
+    <key>NSAppleEventsUsageDescription</key>
+    <string>PlaySpot sends commands to Spotify to play, pause, and skip tracks.</string>
 </dict>
 </plist>
