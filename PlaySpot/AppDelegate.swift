@@ -6,6 +6,7 @@ import Combine
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem?
     private var statusMenu = NSMenu()
+    private var toggleMenuItem: NSMenuItem?
     private let interceptor = MediaKeyInterceptor()
     private let spotify = SpotifyController()
     private var cancellables = Set<AnyCancellable>()
@@ -37,18 +38,22 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         appState.$status
             .dropFirst()
             .sink { [weak self] newStatus in
-                self?.syncInterceptor(for: newStatus)
-                self?.updateMenuBar(status: newStatus)
+                guard let self else { return }
+                self.syncInterceptor(for: newStatus)
+                self.updateMenuBar(status: newStatus, showInMenuBar: self.appState.showInMenuBar)
             }
             .store(in: &cancellables)
 
         appState.$showInMenuBar
             .dropFirst()
-            .sink { [weak self] newShowInMenuBar in self?.updateMenuBar(showInMenuBar: newShowInMenuBar) }
+            .sink { [weak self] newShowInMenuBar in
+                guard let self else { return }
+                self.updateMenuBar(status: self.appState.status, showInMenuBar: newShowInMenuBar)
+            }
             .store(in: &cancellables)
 
         syncInterceptor(for: appState.status)
-        updateMenuBar()
+        updateMenuBar(status: appState.status, showInMenuBar: appState.showInMenuBar)
     }
 
     private func syncInterceptor(for status: InterceptionStatus) {
@@ -63,32 +68,32 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    private func updateMenuBar(status: InterceptionStatus? = nil, showInMenuBar: Bool? = nil) {
-        if showInMenuBar ?? appState.showInMenuBar {
+    private func updateMenuBar(status: InterceptionStatus, showInMenuBar: Bool) {
+        if showInMenuBar {
+            let isActive = status == .active
             if statusItem == nil {
+                let item = NSMenuItem(title: "", action: #selector(toggleInterception), keyEquivalent: "")
+                item.target = self
+                statusMenu.addItem(item)
+                statusMenu.addItem(.separator())
+                statusMenu.addItem(NSMenuItem(title: "Quit", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
+                toggleMenuItem = item
+
                 statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
                 statusItem?.button?.action = #selector(statusItemClicked)
                 statusItem?.button?.target = self
             }
-            let isActive = (status ?? appState.status) == .active
+            toggleMenuItem?.title = isActive ? "Disable Interception" : "Enable Interception"
             statusItem?.button?.image = NSImage(
                 systemSymbolName: isActive ? "music.note" : "music.note.slash",
                 accessibilityDescription: nil
             )
-            statusMenu.removeAllItems()
-            let toggleItem = NSMenuItem(
-                title: isActive ? "Disable Interception" : "Enable Interception",
-                action: #selector(toggleInterception),
-                keyEquivalent: ""
-            )
-            toggleItem.target = self
-            statusMenu.addItem(toggleItem)
-            statusMenu.addItem(.separator())
-            statusMenu.addItem(NSMenuItem(title: "Quit", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
         } else {
             if let item = statusItem {
                 NSStatusBar.system.removeStatusItem(item)
                 statusItem = nil
+                statusMenu.removeAllItems()
+                toggleMenuItem = nil
             }
         }
     }
