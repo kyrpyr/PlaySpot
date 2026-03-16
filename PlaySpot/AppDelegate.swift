@@ -5,6 +5,7 @@ import Combine
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem?
+    private var statusMenu = NSMenu()
     private let interceptor = MediaKeyInterceptor()
     private let spotify = SpotifyController()
     private var cancellables = Set<AnyCancellable>()
@@ -37,7 +38,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             .dropFirst()
             .sink { [weak self] newStatus in
                 self?.syncInterceptor(for: newStatus)
-                self?.updateMenuBar()
+                self?.updateMenuBar(status: newStatus)
             }
             .store(in: &cancellables)
 
@@ -62,18 +63,28 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    private func updateMenuBar() {
+    private func updateMenuBar(status: InterceptionStatus? = nil) {
         if appState.showInMenuBar {
             if statusItem == nil {
                 statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
+                statusItem?.button?.action = #selector(statusItemClicked)
+                statusItem?.button?.target = self
             }
-            let isActive = appState.status == .active
+            let isActive = (status ?? appState.status) == .active
             statusItem?.button?.image = NSImage(
                 systemSymbolName: isActive ? "music.note" : "music.note.slash",
                 accessibilityDescription: nil
             )
-            statusItem?.button?.action = #selector(statusItemClicked)
-            statusItem?.button?.target = self
+            statusMenu.removeAllItems()
+            let toggleItem = NSMenuItem(
+                title: isActive ? "Disable Interception" : "Enable Interception",
+                action: #selector(toggleInterception),
+                keyEquivalent: ""
+            )
+            toggleItem.target = self
+            statusMenu.addItem(toggleItem)
+            statusMenu.addItem(.separator())
+            statusMenu.addItem(NSMenuItem(title: "Quit", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
         } else {
             if let item = statusItem {
                 NSStatusBar.system.removeStatusItem(item)
@@ -95,6 +106,23 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         NSRunningApplication.current.activate(options: [.activateIgnoringOtherApps, .activateAllWindows])
         if let window = NSApp.windows.first(where: { $0.canBecomeKey }) {
             window.makeKeyAndOrderFront(nil)
+        }
+        statusItem?.menu = statusMenu
+        statusItem?.button?.performClick(nil)
+        statusItem?.menu = nil
+    }
+
+    @objc private func toggleInterception() {
+        if appState.status == .active {
+            appState.interceptionEnabled = false
+        } else {
+            let trusted = AXIsProcessTrustedWithOptions(
+                [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary
+            )
+            appState.hasAccessibilityPermission = trusted
+            if trusted {
+                appState.interceptionEnabled = true
+            }
         }
     }
 }
