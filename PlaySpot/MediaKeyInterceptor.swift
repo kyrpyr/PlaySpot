@@ -1,13 +1,13 @@
 import CoreGraphics
 import AppKit
 
+enum MediaKey { case playPause, next, previous }
+
 final class MediaKeyInterceptor {
     private var eventTap: CFMachPort?
     private var runLoopSource: CFRunLoopSource?
 
-    var onPlayPause: (() -> Void)?
-    var onNext: (() -> Void)?
-    var onPrevious: (() -> Void)?
+    var onKey: ((MediaKey) -> Void)?
 
     // CGEventType.systemDefined raw value (stable since macOS 10.4; newer SDKs removed the named case)
     private static let systemDefinedEventType = CGEventType(rawValue: 14)!
@@ -92,19 +92,14 @@ final class MediaKeyInterceptor {
             return nil  // consume key-up silently
         }
 
-        let code = Self.keyCode(from: data1)
-        switch code {
-        case 16:
-            DispatchQueue.main.async { self.onPlayPause?() }
-            return nil  // consume
-        case 17:
-            DispatchQueue.main.async { self.onNext?() }
-            return nil
-        case 18:
-            DispatchQueue.main.async { self.onPrevious?() }
-            return nil
-        default:
-            return Unmanaged.passRetained(event)
+        let key: MediaKey
+        switch Self.keyCode(from: data1) {
+        case 16: key = .playPause
+        case 17: key = .next
+        case 18: key = .previous
+        default: return Unmanaged.passRetained(event)
         }
+        DispatchQueue.main.async { self.onKey?(key) }
+        return nil
     }
 }

@@ -12,9 +12,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         // Wire interceptor callbacks
-        interceptor.onPlayPause = { [weak self] in Task { await self?.spotify.playpause() } }
-        interceptor.onNext = { [weak self] in Task { await self?.spotify.nextTrack() } }
-        interceptor.onPrevious = { [weak self] in Task { await self?.spotify.previousTrack() } }
+        interceptor.onKey = { [weak self] key in
+            Task {
+                switch key {
+                case .playPause: await self?.spotify.playpause()
+                case .next:      await self?.spotify.nextTrack()
+                case .previous:  await self?.spotify.previousTrack()
+                }
+            }
+        }
 
         // Check permission and restore saved state
         let trusted = AXIsProcessTrusted()
