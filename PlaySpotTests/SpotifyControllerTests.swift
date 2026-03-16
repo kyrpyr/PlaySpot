@@ -1,29 +1,22 @@
 import XCTest
 @testable import PlaySpot
 
-// Mock workspace to avoid launching real processes in tests
 final class MockWorkspace: WorkspaceProtocol {
-    var launchCallCount = 0
-    var lastLaunchedBundleId: String?
     var spotifyRunning = false
+    var launchCallCount = 0
 
-    func launchApp(bundleIdentifier: String) async {
-        launchCallCount += 1
-        lastLaunchedBundleId = bundleIdentifier
-    }
-
-    func isAppRunning(bundleIdentifier: String) -> Bool {
-        return spotifyRunning
+    func resolvedSpotifyApp() async -> URL? {
+        if !spotifyRunning { launchCallCount += 1 }
+        return URL(fileURLWithPath: "/Applications/Spotify.app")
     }
 }
 
 final class SpotifyControllerTests: XCTestCase {
     func test_whenSpotifyNotRunning_launchesApp() async {
-        let workspace = MockWorkspace()  // spotifyRunning = false by default
+        let workspace = MockWorkspace()
         let controller = await SpotifyController(workspace: workspace)
         await controller.playpause()
         XCTAssertEqual(workspace.launchCallCount, 1)
-        XCTAssertEqual(workspace.lastLaunchedBundleId, "com.spotify.client")
     }
 
     func test_whenSpotifyRunning_doesNotLaunch() async {
@@ -37,8 +30,6 @@ final class SpotifyControllerTests: XCTestCase {
     }
 
     func test_whenSpotifyNotRunning_nextTrack_launchesApp() async {
-        // next/previous when Spotify is not running: launch + playpause.
-        // The playpause after launch is intentional — Spotify resumes last session.
         let workspace = MockWorkspace()
         let controller = await SpotifyController(workspace: workspace)
         await controller.nextTrack()
@@ -52,7 +43,7 @@ final class SpotifyControllerTests: XCTestCase {
         XCTAssertEqual(workspace.launchCallCount, 1)
     }
 
-    func test_whenSpotifyNotRunning_playpauseSentAfterLaunch() async {
+    func test_whenSpotifyNotRunning_commandSentAfterLaunch() async {
         let workspace = MockWorkspace()
         var scriptsSent: [String] = []
         let controller = await SpotifyController(workspace: workspace, onScript: { scriptsSent.append($0) })
