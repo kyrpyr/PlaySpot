@@ -1,16 +1,15 @@
 import AppKit
 
 protocol WorkspaceProtocol {
-    func launchApp(bundleIdentifier: String)
+    func launchApp(bundleIdentifier: String) async
     func isAppRunning(bundleIdentifier: String) -> Bool
 }
 
 extension NSWorkspace: WorkspaceProtocol {
-    func launchApp(bundleIdentifier: String) {
+    func launchApp(bundleIdentifier: String) async {
         // Prefer LS lookup; fall back to well-known paths if the LS database is stale.
-        if let url = resolvedURL(for: bundleIdentifier) {
-            openApplication(at: url, configuration: NSWorkspace.OpenConfiguration())
-        }
+        guard let url = resolvedURL(for: bundleIdentifier) else { return }
+        _ = try? await openApplication(at: url, configuration: NSWorkspace.OpenConfiguration())
     }
 
     func isAppRunning(bundleIdentifier: String) -> Bool {
@@ -38,10 +37,11 @@ extension NSWorkspace: WorkspaceProtocol {
     }
 }
 
+@MainActor
 final class SpotifyController {
     private let spotifyBundleId = "com.spotify.client"
     private let workspace: WorkspaceProtocol
-    // onScript: injectable for testing the delayed-playpause path
+    // onScript: injectable for testing
     private let onScript: ((String) -> Void)?
 
     init(workspace: WorkspaceProtocol = NSWorkspace.shared, onScript: ((String) -> Void)? = nil) {
@@ -49,33 +49,33 @@ final class SpotifyController {
         self.onScript = onScript
     }
 
-    func playpause() {
-        if !ensureRunning() { return }
+    func playpause() async {
+        await ensureRunning()
         run(command: "playpause")
     }
 
-    func nextTrack() {
-        if !ensureRunning() { return }
+    func nextTrack() async {
+        guard workspace.isAppRunning(bundleIdentifier: spotifyBundleId) else {
+            await workspace.launchApp(bundleIdentifier: spotifyBundleId)
+            run(command: "playpause")
+            return
+        }
         run(command: "next track")
     }
 
-    func previousTrack() {
-        if !ensureRunning() { return }
+    func previousTrack() async {
+        guard workspace.isAppRunning(bundleIdentifier: spotifyBundleId) else {
+            await workspace.launchApp(bundleIdentifier: spotifyBundleId)
+            run(command: "playpause")
+            return
+        }
         run(command: "previous track")
     }
 
-    // Returns true if Spotify is already running.
-    // If not running: launches it, schedules a delayed playpause, returns false.
-    @discardableResult
-    private func ensureRunning() -> Bool {
-        guard workspace.isAppRunning(bundleIdentifier: spotifyBundleId) else {
-            workspace.launchApp(bundleIdentifier: spotifyBundleId)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
-                self?.run(command: "playpause")
-            }
-            return false
-        }
-        return true
+    // Launches Spotify if not running and waits for it to finish launching.
+    private func ensureRunning() async {
+        guard !workspace.isAppRunning(bundleIdentifier: spotifyBundleId) else { return }
+        await workspace.launchApp(bundleIdentifier: spotifyBundleId)
     }
 
     // Builds a path-based AppleScript reference so the command works even when
@@ -90,9 +90,7 @@ final class SpotifyController {
             .first { FileManager.default.fileExists(atPath: $0) }
     }
 
-    // Must be called on main thread — all callers dispatch to main via MediaKeyInterceptor.
     private func run(command: String) {
-        dispatchPrecondition(condition: .onQueue(.main))
         // Use the full path as the application reference so AppleScript doesn't
         // need to resolve the name through Launch Services (which may not have Spotify).
         let appRef = spotifyAppPath().map { "\"\($0)\"" } ?? "\"Spotify\""

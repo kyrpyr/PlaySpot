@@ -2,6 +2,7 @@ import AppKit
 import SwiftUI
 import Combine
 
+@MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem?
     private let interceptor = MediaKeyInterceptor()
@@ -11,9 +12,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         // Wire interceptor callbacks
-        interceptor.onPlayPause = { [weak self] in self?.spotify.playpause() }
-        interceptor.onNext = { [weak self] in self?.spotify.nextTrack() }
-        interceptor.onPrevious = { [weak self] in self?.spotify.previousTrack() }
+        interceptor.onPlayPause = { [weak self] in Task { await self?.spotify.playpause() } }
+        interceptor.onNext = { [weak self] in Task { await self?.spotify.nextTrack() } }
+        interceptor.onPrevious = { [weak self] in Task { await self?.spotify.previousTrack() } }
 
         // Check permission and restore saved state
         let trusted = AXIsProcessTrusted()
