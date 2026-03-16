@@ -84,10 +84,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 statusItem?.button?.target = self
             }
             toggleMenuItem?.title = isActive ? "Disable Interception" : "Enable Interception"
-            statusItem?.button?.image = NSImage(
-                systemSymbolName: isActive ? "music.note" : "music.note.slash",
-                accessibilityDescription: nil
-            )
+            if let icon = NSImage(named: "MenuBarIcon") {
+                icon.isTemplate = false
+                icon.size = NSSize(width: 18, height: 18)
+                statusItem?.button?.image = icon
+            }
         } else {
             if let item = statusItem {
                 NSStatusBar.system.removeStatusItem(item)

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0D3C1FC72F6846D400B8A536 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0D3C1FC52F68445500B8A536 /* Assets.xcassets */; };
+		0D3C1FC92F684AAF00B8A536 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 0D3C1FC82F684AAF00B8A536 /* AppIcon.icon */; };
 		1CED0CC08193A430C4939F61 /* SpotifyControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD1CD9BB28E0556E6DEE610E /* SpotifyControllerTests.swift */; };
 		208F4550DEB8DF35356F7A15 /* MediaKeyInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26E5ABF36F0751109101E0E /* MediaKeyInterceptor.swift */; };
 		38E1E5D36BA152DB057FB052 /* PlaySpotApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E135BBB5CA1E8A84804703 /* PlaySpotApp.swift */; };
@@ -30,6 +32,8 @@
 
 /* Begin PBXFileReference section */
 		016EAC57E2E55D07E4E72879 /* PlaySpot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PlaySpot.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0D3C1FC52F68445500B8A536 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		0D3C1FC82F684AAF00B8A536 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		1955B267FA584D2420EB35DB /* AppStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStateTests.swift; sourceTree = "<group>"; };
 		4A618F7156715820E031C26A /* PlaySpot.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PlaySpot.entitlements; sourceTree = "<group>"; };
 		4B8A871D78B53FCB3CE83B07 /* MediaKeyInterceptorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaKeyInterceptorTests.swift; sourceTree = "<group>"; };
@@ -49,6 +53,7 @@
 		4318E08A5875A269675783DE /* PlaySpot */ = {
 			isa = PBXGroup;
 			children = (
+				0D3C1FC82F684AAF00B8A536 /* AppIcon.icon */,
 				CDB9642BE869ABB16766B30D /* AppDelegate.swift */,
 				F055136B8FF440AB973DEFBF /* AppState.swift */,
 				B0A44E3F797AB5C4A551E6B8 /* ContentView.swift */,
@@ -57,6 +62,7 @@
 				4A618F7156715820E031C26A /* PlaySpot.entitlements */,
 				61E135BBB5CA1E8A84804703 /* PlaySpotApp.swift */,
 				74F7F2A0AC6DB6DD212EF3FD /* SpotifyController.swift */,
+				0D3C1FC52F68445500B8A536 /* Assets.xcassets */,
 			);
 			path = PlaySpot;
 			sourceTree = "<group>";
@@ -98,6 +104,7 @@
 			buildConfigurationList = D2CE978E79149F821AA5B4D6 /* Build configuration list for PBXNativeTarget "PlaySpot" */;
 			buildPhases = (
 				10C84223088DA70A05493C9F /* Sources */,
+				0D3C1FC62F6846C200B8A536 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -164,6 +171,18 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		0D3C1FC62F6846C200B8A536 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0D3C1FC72F6846D400B8A536 /* Assets.xcassets in Resources */,
+				0D3C1FC92F684AAF00B8A536 /* AppIcon.icon in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		10C84223088DA70A05493C9F /* Sources */ = {
