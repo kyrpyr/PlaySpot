@@ -41,10 +41,8 @@ final class SpotifyController {
     private func send(_ command: String) async {
         guard let url = await workspace.resolvedSpotifyApp() else { return }
         let script = "tell application \"\(url.path)\" to \(command)"
-        print("[PlaySpot] run: \(script)")
         if let onScript { onScript(script); return }
         var error: NSDictionary?
         NSAppleScript(source: script)?.executeAndReturnError(&error)
-        if let error { print("[PlaySpot] AppleScript error: \(error)") }
     }
 }

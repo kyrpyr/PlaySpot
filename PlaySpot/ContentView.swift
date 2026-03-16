@@ -46,7 +46,6 @@ struct ContentView: View {
             let trusted = AXIsProcessTrustedWithOptions(
                 [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary
             )
-            print("[PlaySpot] handleToggle: AXIsProcessTrustedWithOptions=\(trusted)")
             state.hasAccessibilityPermission = trusted
             if trusted {
                 state.interceptionEnabled = true

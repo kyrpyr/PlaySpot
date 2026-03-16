@@ -23,9 +23,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         // Check permission and restore saved state
-        let trusted = AXIsProcessTrusted()
-        print("[PlaySpot] launch: AXIsProcessTrusted=\(trusted) path=\(Bundle.main.bundlePath)")
-        appState.hasAccessibilityPermission = trusted
+        appState.hasAccessibilityPermission = AXIsProcessTrusted()
         let savedEnabled = UserDefaults.standard.bool(forKey: "interceptionEnabled")
         if savedEnabled {
             appState.interceptionEnabled = true  // will no-op if no permission
@@ -53,7 +51,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func syncInterceptor(for status: InterceptionStatus) {
-        print("[PlaySpot] syncInterceptor: status=\(status)")
         if status == .active {
             let ok = interceptor.enable()
             if !ok {
