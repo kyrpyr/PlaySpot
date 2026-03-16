@@ -44,7 +44,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         appState.$showInMenuBar
             .dropFirst()
-            .sink { [weak self] _ in self?.updateMenuBar() }
+            .sink { [weak self] newShowInMenuBar in self?.updateMenuBar(showInMenuBar: newShowInMenuBar) }
             .store(in: &cancellables)
 
         syncInterceptor(for: appState.status)
@@ -63,8 +63,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    private func updateMenuBar(status: InterceptionStatus? = nil) {
-        if appState.showInMenuBar {
+    private func updateMenuBar(status: InterceptionStatus? = nil, showInMenuBar: Bool? = nil) {
+        if showInMenuBar ?? appState.showInMenuBar {
             if statusItem == nil {
                 statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
                 statusItem?.button?.action = #selector(statusItemClicked)
