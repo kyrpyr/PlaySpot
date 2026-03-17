@@ -84,7 +84,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 statusItem?.button?.target = self
             }
             toggleMenuItem?.title = isActive ? "Disable Interception" : "Enable Interception"
-            if let icon = NSImage(named: "MenuBarIcon") {
+            let iconName = isActive ? "MenuBarIcon" : "MenuBarIconInactive"
+            if let icon = NSImage(named: iconName) {
                 icon.isTemplate = false
                 icon.size = NSSize(width: 18, height: 18)
                 statusItem?.button?.image = icon
