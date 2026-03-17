@@ -17,6 +17,12 @@ struct ContentView: View {
 
             Toggle("Show in Menu Bar", isOn: $state.showInMenuBar)
                 .toggleStyle(.checkbox)
+
+            Toggle("Launch at Login", isOn: Binding(
+                get: { state.launchAtLogin },
+                set: { state.launchAtLogin = $0 }
+            ))
+            .toggleStyle(.checkbox)
         }
         .padding(30)
         .frame(width: 300)

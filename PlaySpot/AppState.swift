@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import ServiceManagement
 
 enum InterceptionStatus {
     case active
@@ -10,6 +11,22 @@ enum InterceptionStatus {
 final class AppState: ObservableObject {
     @Published var showInMenuBar: Bool {
         didSet { UserDefaults.standard.set(showInMenuBar, forKey: "showInMenuBar") }
+    }
+
+    var launchAtLogin: Bool {
+        get { SMAppService.mainApp.status == .enabled }
+        set {
+            objectWillChange.send()
+            do {
+                if newValue {
+                    try SMAppService.mainApp.register()
+                } else {
+                    try SMAppService.mainApp.unregister()
+                }
+            } catch {
+                // Registration failed — UI will reflect actual state on next read
+            }
+        }
     }
 
     @Published var hasAccessibilityPermission: Bool = true
