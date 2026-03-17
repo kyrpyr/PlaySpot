@@ -83,7 +83,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 statusItem?.button?.action = #selector(statusItemClicked)
                 statusItem?.button?.target = self
             }
-            toggleMenuItem?.title = isActive ? "Disable Interception" : "Enable Interception"
+            toggleMenuItem?.title = isActive ? "Disable" : "Enable"
             let iconName = isActive ? "MenuBarIcon" : "MenuBarIconInactive"
             if let icon = NSImage(named: iconName) {
                 icon.isTemplate = false

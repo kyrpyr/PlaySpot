@@ -4,10 +4,6 @@ struct ContentView: View {
     @EnvironmentObject var state: AppState
     var body: some View {
         VStack(spacing: 20) {
-            Text(statusText)
-                .font(.headline)
-                .foregroundStyle(statusColor)
-
             Button {
                 handleToggle()
             } label: {
@@ -24,18 +20,6 @@ struct ContentView: View {
         }
         .padding(30)
         .frame(width: 300)
-    }
-
-    private var statusText: String {
-        switch state.status {
-        case .active:      return "Interception active"
-        case .inactive:    return "Interception inactive"
-        case .noPermission: return "Accessibility permission required"
-        }
-    }
-
-    private var statusColor: Color {
-        state.status == .active ? .green : .secondary
     }
 
     private func handleToggle() {
