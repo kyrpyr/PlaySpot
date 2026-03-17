@@ -12,11 +12,19 @@ macOS utility that intercepts media keys (play/pause, next, previous) and redire
 - Remembers state between launches
 - macOS 13.0+
 
-## Setup
+## Install
+
+1. Download `PlaySpot.zip` from [Releases](https://github.com/kyrpyr/PlaySpot/releases)
+2. Unzip and move `PlaySpot.app` to Applications
+3. Open the app — macOS will show a warning since it's not signed
+4. Go to System Settings → Privacy & Security, scroll down and click "Open Anyway"
+5. Grant Accessibility permission when prompted (System Settings → Privacy & Security → Accessibility)
+
+## Build from source
 
 1. Open `PlaySpot.xcodeproj` in Xcode
 2. Build and run (Cmd+R)
-3. Grant Accessibility permission when prompted (System Settings → Privacy & Security → Accessibility)
+3. Grant Accessibility permission when prompted
 
 ## How it works
 
