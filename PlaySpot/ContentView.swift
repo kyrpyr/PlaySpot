@@ -8,17 +8,22 @@ struct ContentView: View {
                 .font(.headline)
                 .foregroundStyle(statusColor)
 
-            Button(toggleLabel) {
+            Button {
                 handleToggle()
+            } label: {
+                Image("PowerIcon")
+                    .resizable()
+                    .frame(width: 200, height: 200)
             }
-            .buttonStyle(.borderedProminent)
-            .tint(state.status == .active ? .red : .green)
+            .buttonStyle(.plain)
+            .focusable(false)
+            .foregroundStyle(state.status == .active ? Color(red: 0.11, green: 0.73, blue: 0.33) : .gray)
 
             Toggle("Show in Menu Bar", isOn: $state.showInMenuBar)
                 .toggleStyle(.checkbox)
         }
         .padding(30)
-        .frame(width: 280)
+        .frame(width: 300)
     }
 
     private var statusText: String {
@@ -31,10 +36,6 @@ struct ContentView: View {
 
     private var statusColor: Color {
         state.status == .active ? .green : .secondary
-    }
-
-    private var toggleLabel: String {
-        state.status == .active ? "Disable interception" : "Enable interception"
     }
 
     private func handleToggle() {
