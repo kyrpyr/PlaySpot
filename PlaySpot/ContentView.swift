@@ -31,14 +31,21 @@ struct ContentView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            Link("Source Code on GitHub ↗", destination: Self.githubURL)
-                .foregroundStyle(.tertiary)
-                .font(.system(size: 11))
-                .focusable(false)
-                .onHover { hovering in
-                    if hovering { NSCursor.pointingHand.push() } else { NSCursor.pop() }
-                }
-                .frame(maxWidth: .infinity, alignment: .trailing)
+            HStack {
+                Text("v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "")")
+                    .foregroundStyle(.tertiary)
+                    .font(.system(size: 11))
+
+                Spacer()
+
+                Link("Source Code on GitHub ↗", destination: Self.githubURL)
+                    .foregroundStyle(.tertiary)
+                    .font(.system(size: 11))
+                    .focusable(false)
+                    .onHover { hovering in
+                        if hovering { NSCursor.pointingHand.push() } else { NSCursor.pop() }
+                    }
+            }
         }
         .padding(30)
         .frame(width: 300)
