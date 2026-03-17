@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import ServiceManagement
+import ApplicationServices
 
 enum InterceptionStatus {
     case active
@@ -54,6 +55,20 @@ final class AppState: ObservableObject {
     }
 
     private var _interceptionEnabled: Bool = false
+
+    func toggleInterception() {
+        if status == .active {
+            interceptionEnabled = false
+        } else {
+            let trusted = AXIsProcessTrustedWithOptions(
+                [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary
+            )
+            hasAccessibilityPermission = trusted
+            if trusted {
+                interceptionEnabled = true
+            }
+        }
+    }
 
     init() {
         showInMenuBar = UserDefaults.standard.bool(forKey: "showInMenuBar")

@@ -120,16 +120,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func toggleInterception() {
-        if appState.status == .active {
-            appState.interceptionEnabled = false
-        } else {
-            let trusted = AXIsProcessTrustedWithOptions(
-                [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary
-            )
-            appState.hasAccessibilityPermission = trusted
-            if trusted {
-                appState.interceptionEnabled = true
-            }
-        }
+        appState.toggleInterception()
     }
 }

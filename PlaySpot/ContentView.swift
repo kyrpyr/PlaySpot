@@ -7,7 +7,7 @@ struct ContentView: View {
     var body: some View {
         VStack(spacing: 20) {
             Button {
-                handleToggle()
+                state.toggleInterception()
             } label: {
                 Image("PowerIcon")
                     .resizable()
@@ -44,20 +44,5 @@ struct ContentView: View {
         .frame(width: 300)
     }
 
-    private func handleToggle() {
-        if state.status == .active {
-            state.interceptionEnabled = false
-        } else {
-            // AXIsProcessTrustedWithOptions opens System Settings focused on the exact running
-            // binary when not trusted — no manual navigation or wrong-entry risk.
-            let trusted = AXIsProcessTrustedWithOptions(
-                [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary
-            )
-            state.hasAccessibilityPermission = trusted
-            if trusted {
-                state.interceptionEnabled = true
-            }
-            // If not trusted: System Settings just opened — user adds the app, then clicks Enable again.
-        }
-    }
+
 }
