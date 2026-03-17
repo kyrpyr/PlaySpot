@@ -6,12 +6,11 @@ macOS utility that intercepts media keys (play/pause, next, previous) and redire
 
 ## Features
 
-- Intercepts system media keys via CGEvent tap
-- Sends commands to Spotify via AppleScript
+- Intercepts media keys and redirects them to Spotify
 - Menu bar icon with enable/disable toggle
-- Launch at login support
+- Launch at login
 - Remembers state between launches
-- Requires macOS 13.0+
+- macOS 13.0+
 
 ## Setup
 
