@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="PlaySpot/AppIcon.icon/Assets/logo4.png" width="128">
+</p>
+
 # PlaySpot
 
 ![Tests](https://github.com/kyrpyr/PlaySpot/actions/workflows/tests.yml/badge.svg)
