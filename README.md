@@ -1,5 +1,7 @@
 # PlaySpot
 
+![Tests](https://github.com/kyrpyr/PlaySpot/actions/workflows/tests.yml/badge.svg)
+
 macOS utility that intercepts media keys (play/pause, next, previous) and redirects them to Spotify — even when other apps try to capture them.
 
 ## Features
