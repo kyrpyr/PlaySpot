@@ -30,6 +30,16 @@ macOS utility that intercepts media keys (play/pause, next, previous) and redire
 
 PlaySpot installs a system-level event tap that captures media key events before they reach other apps. When a media key is pressed, PlaySpot forwards the command to Spotify using AppleScript. If Spotify isn't running, it launches automatically.
 
+## Updating
+
+When installing a new version, macOS may not recognize the existing Accessibility permission. Reset it by running:
+
+```
+tccutil reset Accessibility com.local.PlaySpot
+```
+
+Or remove PlaySpot manually in System Settings → Privacy & Security → Accessibility, then re-grant on next launch.
+
 ## Permissions
 
 - **Accessibility** — required to intercept media key events
