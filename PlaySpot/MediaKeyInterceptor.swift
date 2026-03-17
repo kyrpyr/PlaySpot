@@ -88,11 +88,13 @@ final class MediaKeyInterceptor {
             return nil  // consume key-up silently
         }
 
+        let code = Self.keyCode(from: data1)
+
         let key: MediaKey
-        switch Self.keyCode(from: data1) {
+        switch code {
         case 16: key = .playPause
-        case 17: key = .next
-        case 18: key = .previous
+        case 17, 19: key = .next
+        case 18, 20: key = .previous
         default: return Unmanaged.passRetained(event)
         }
         DispatchQueue.main.async { self.onKey?(key) }
