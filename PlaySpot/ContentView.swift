@@ -17,12 +17,22 @@ struct ContentView: View {
 
             Toggle("Show in Menu Bar", isOn: $state.showInMenuBar)
                 .toggleStyle(.checkbox)
+                .focusable(false)
 
             Toggle("Launch at Login", isOn: Binding(
                 get: { state.launchAtLogin },
                 set: { state.launchAtLogin = $0 }
             ))
             .toggleStyle(.checkbox)
+            .focusable(false)
+
+            Link("Source Code on GitHub ↗", destination: URL(string: "https://github.com/kyrpyr/PlaySpot")!)
+                .foregroundStyle(.tertiary)
+                .font(.system(size: 11))
+                .focusable(false)
+                .onHover { hovering in
+                    if hovering { NSCursor.pointingHand.push() } else { NSCursor.pop() }
+                }
         }
         .padding(30)
         .frame(width: 300)
