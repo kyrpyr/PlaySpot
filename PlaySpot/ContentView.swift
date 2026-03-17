@@ -15,16 +15,19 @@ struct ContentView: View {
             .focusable(false)
             .foregroundStyle(state.status == .active ? Color(red: 0.11, green: 0.73, blue: 0.33) : .gray)
 
-            Toggle("Show in Menu Bar", isOn: $state.showInMenuBar)
+            VStack(alignment: .leading, spacing: 8) {
+                Toggle("Show in Menu Bar", isOn: $state.showInMenuBar)
+                    .toggleStyle(.checkbox)
+                    .focusable(false)
+
+                Toggle("Launch at Login", isOn: Binding(
+                    get: { state.launchAtLogin },
+                    set: { state.launchAtLogin = $0 }
+                ))
                 .toggleStyle(.checkbox)
                 .focusable(false)
-
-            Toggle("Launch at Login", isOn: Binding(
-                get: { state.launchAtLogin },
-                set: { state.launchAtLogin = $0 }
-            ))
-            .toggleStyle(.checkbox)
-            .focusable(false)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
 
             Link("Source Code on GitHub ↗", destination: URL(string: "https://github.com/kyrpyr/PlaySpot")!)
                 .foregroundStyle(.tertiary)
@@ -33,6 +36,7 @@ struct ContentView: View {
                 .onHover { hovering in
                     if hovering { NSCursor.pointingHand.push() } else { NSCursor.pop() }
                 }
+                .frame(maxWidth: .infinity, alignment: .trailing)
         }
         .padding(30)
         .frame(width: 300)
