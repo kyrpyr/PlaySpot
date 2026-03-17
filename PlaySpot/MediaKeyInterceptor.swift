@@ -84,11 +84,16 @@ final class MediaKeyInterceptor {
         }
 
         let data1 = Int(nsEvent.data1)
-        guard Self.isKeyDown(data1: data1) else {
-            return nil  // consume key-up silently
+        let code = Self.keyCode(from: data1)
+
+        // Only handle our media keys — pass everything else (volume, etc.) through
+        guard [16, 17, 18, 19, 20].contains(code) else {
+            return Unmanaged.passRetained(event)
         }
 
-        let code = Self.keyCode(from: data1)
+        guard Self.isKeyDown(data1: data1) else {
+            return nil  // consume key-up for our keys
+        }
 
         let key: MediaKey
         switch code {
