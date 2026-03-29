@@ -8,6 +8,10 @@
 
 macOS utility that intercepts media keys (play/pause, next, previous) and redirects them to Spotify — even when other apps try to capture them.
 
+<p align="center">
+  <img width="300" height="382" alt="PlaySpot App" src="https://github.com/user-attachments/assets/95a48e0b-7308-4677-a5e9-0c606e99a9f4" />
+</p>
+
 ## Install
 
 1. Download `PlaySpot.zip` from [Releases](https://github.com/kyrpyr/PlaySpot/releases)
